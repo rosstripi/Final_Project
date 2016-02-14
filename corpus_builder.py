@@ -47,3 +47,9 @@ class TweetListener(StreamListener):
 
 
 trump_stream = Stream(auth, TweetListener("trump")).filter(track=['#Trump'])
+clinton_stream = Stream(auth, TweetListener("clinton")).filter(track=['#Clinton'])
+cruz_stream = Stream(auth, TweetListener("cruz")).filter(track=['#Cruz'])
+bush_stream = Stream(auth, TweetListener("bush")).filter(track=['#Bush'])
+rubio_stream = Stream(auth, TweetListener("rubio")).filter(track=['#Rubio'])
+kasich_stream = Stream(auth, TweetListener("kasich")).filter(track=['#Kasich'])
+sanders_stream = Stream(auth, TweetListener("sanders")).filter(track=['#Sanders'])
