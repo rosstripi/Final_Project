@@ -9,6 +9,7 @@ import tweepy
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
+import os
 
 consumer_key        = "3cbQ7BUWxktCbCte32GlShgbl"
 consumer_secret     = "BWjrIMQ9r5JuFRlm0W33CRXs9a8tNqCxO2om75izNE7T8LklrG"
@@ -45,6 +46,7 @@ class TweetListener(StreamListener):
 
     def on_data(self, data):
         try:
+            os.makedirs(os.path.dirname('corpora/{}.json'.format(self.filename)), exist_ok=True)
             with open('corpora/{}.json'.format(self.filename), 'a') as f:
                 f.write(data)
                 return True
