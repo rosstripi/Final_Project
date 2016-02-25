@@ -23,20 +23,6 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 
-class DownloadWorker(Thread):
-    def __init__(self, queue):
-        Thread.__init__(self)
-        self.queue = queue
-
-    def run(self):
-        while True:
-            # Get the work from the queue and expand the tuple
-            directory, link = self.queue.get()
-            download_link(directory, link)
-            self.queue.task_done()
-
-
-
 class TweetListener(StreamListener):
     """Class to pull tweets as they appear"""
     filename = 'stream'
