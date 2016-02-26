@@ -42,13 +42,52 @@ class TweetListener(StreamListener):
 
     def on_error(self, status):
         print(status)
+        if status == 420:
+            print("\tNumber of allowed connections for time window exceeded for " + self.filename)
+            return False  # returning False in on_data disconnects the stream
         return True
 
 
-trump_stream = Stream(auth, TweetListener("trump")).filter(track=['#Trump'])
-clinton_stream = Stream(auth, TweetListener("clinton")).filter(track=['#Clinton'])
-cruz_stream = Stream(auth, TweetListener("cruz")).filter(track=['#Cruz'])
-bush_stream = Stream(auth, TweetListener("bush")).filter(track=['#Bush'])
-rubio_stream = Stream(auth, TweetListener("rubio")).filter(track=['#Rubio'])
-kasich_stream = Stream(auth, TweetListener("kasich")).filter(track=['#Kasich'])
-sanders_stream = Stream(auth, TweetListener("sanders")).filter(track=['#Sanders'])
+def carson_fetch():
+    carson_stream = Stream(auth, TweetListener("carson")).filter(track=['#Carson'], async=True)
+
+
+def clinton_fetch():
+    clinton_stream = Stream(auth, TweetListener("clinton")).filter(track=['#Clinton'], async=True)
+
+
+def cruz_fetch():
+    cruz_stream = Stream(auth, TweetListener("cruz")).filter(track=['#Cruz'], async=True)
+
+
+def kasich_fetch():
+    kasich_stream = Stream(auth, TweetListener("kasich")).filter(track=['#Kasich'], async=True)
+
+
+def rubio_fetch():
+    rubio_stream = Stream(auth, TweetListener("rubio")).filter(track=['#Rubio'], async=True)
+
+
+def sanders_fetch():
+    sanders_stream = Stream(auth, TweetListener("sanders")).filter(track=['#Sanders'], async=True)
+
+
+def trump_fetch():
+    trump_stream = Stream(auth, TweetListener("trump")).filter(track=['#Trump'], async=True)
+
+
+carson_thread = Thread(target=carson_fetch)
+clinton_thread = Thread(target=clinton_fetch)
+cruz_thread = Thread(target=cruz_fetch)
+kasich_thread = Thread(target=kasich_fetch)
+rubio_thread = Thread(target=cruz_fetch)
+sanders_thread = Thread(target=sanders_fetch)
+trump_thread = Thread(target=trump_fetch)
+
+carson_thread.start()
+clinton_thread.start()
+cruz_thread.start()
+kasich_thread.start()
+rubio_thread.start()
+sanders_thread.start()
+trump_thread.start()
