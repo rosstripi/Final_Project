@@ -190,32 +190,8 @@ def update_singletons(counter, terms_all):
     counter.update(terms_all)
 
 
-# def update_singletons(counter, tweet_text):
-#     terms_all = [term.lower() for term in preprocess(tweet_text) if term.lower() not in stop]
-#     counter.update(terms_all)
-#     if any(term in terms_all for term in carson_terms):
-#         carson_singletons.update(terms_all)
-#     if any(term in terms_all for term in clinton_terms):
-#         clinton_singletons.update(terms_all)
-#     if any(term in terms_all for term in cruz_terms):
-#         cruz_singletons.update(terms_all)
-#     if any(term in terms_all for term in kasich_terms):
-#         kasich_singletons.update(terms_all)
-#     if any(term in terms_all for term in rubio_terms):
-#         rubio_singletons.update(terms_all)
-#     if any(term in terms_all for term in sanders_terms):
-#         sanders_singletons.update(terms_all)
-#     if any(term in terms_all for term in trump_terms):
-#         trump_singletons.update(terms_all)
-
-
 def update_bigrams(counter, bigrams_all):
     counter.update(bigrams_all)
-
-
-# def update_bigrams(counter, tweet_text):
-#     bigrams_all = bigrams([term.lower() for term in preprocess(tweet_text)])
-#     counter.update(bigrams_all)
 
 
 def update_trigrams(counter, tweet_text):
@@ -228,15 +204,6 @@ def update_com(ddict, terms_all):
             word1, word2 = sorted([terms_all[i], terms_all[j]])
             if word1 != word2:
                 ddict[word1][word2] += 1
-
-
-# def update_com(ddict, tweet_text):
-#     terms_all = [term.lower() for term in preprocess(tweet_text) if term.lower() not in stop]
-#     for i in range(len(terms_all)-1):
-#         for j in range(i+1, len(terms_all)):
-#             word1, word2 = sorted([terms_all[i], terms_all[j]])
-#             if word1 != word2:
-#                 ddict[word1][word2] += 1
 
 
 def calculate_probabilities():
