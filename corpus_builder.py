@@ -3,8 +3,6 @@ Tweet Corpus Builder for Final Project
 author: Ross Tripi
 """
 
-from queue import Queue
-from threading import Thread
 import tweepy
 from tweepy import OAuthHandler
 from tweepy import Stream
