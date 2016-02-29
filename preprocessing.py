@@ -45,13 +45,13 @@ singleton_probabilities = {}  # convert to numpy array for memory optimization
 singleton_prob_com = defaultdict(lambda: defaultdict(int))  # convert to numpy array for memory optimization
 
 # terms for each candidate
-carson_terms = ['#Carson', 'Carson', '#BenCarson', 'Ben Carson']
-clinton_terms = ['#Clinton', 'Clinton', '#Hillary', 'Hillary', '#HillaryClinton', 'Hillary Clinton']
-cruz_terms = ['#Cruz', 'Cruz', '#TedCruz', 'Ted Cruz']
-kasich_terms = ['#Kasich', 'Kasich', '#JohnKasich', 'John Kasich']
-rubio_terms = ['#Rubio', 'Rubio', '#Marco', 'Marco', '#MarcoRubio', 'Marco Rubio']
-sanders_terms = ['#Sanders', 'Sanders', '#Bernie', 'Bernie', '#BernieSanders', 'Bernie Sanders']
-trump_terms = ['#Trump', 'Trump', '#Donald', 'Donald', '#DonaldTrump', 'Donald Trump']
+carson_terms = ['#carson', 'carson', '#bencarson', 'ben carson']
+clinton_terms = ['#clinton', 'clinton', '#hillary', 'hillary', '#hillaryclinton', 'hillary clinton']
+cruz_terms = ['#cruz', 'cruz', '#tedcruz', 'ted cruz']
+kasich_terms = ['#kasich', 'kasich', '#johnkasich', 'john kasich']
+rubio_terms = ['#rubio', 'rubio', '#marco', 'marco', '#marcorubio', 'marco rubio']
+sanders_terms = ['#sanders', 'sanders', '#bernie', 'bernie', '#berniesanders', 'bernie sanders']
+trump_terms = ['#trump', 'trump', '#donald', 'donald', '#donaldtrump', 'donald trump']
 
 positive_vocab = [
     'good', 'nice', 'great', 'awesome', 'outstanding',
@@ -111,34 +111,132 @@ def tokenize(s):
     return tokens_re.findall(s)
 
 
-def preprocess(s, lowercase=False):
+def preprocess(s, lowercase=True):
     tokens = tokenize(s)
     if lowercase:
         tokens = [token if emoticon_re.search(token) else token.lower() for token in tokens]
     return tokens
 
 
-def update_singletons(counter, tweet_text):
+def update_all_counters(tweet_text):
+    # update counter for all singletons
     terms_all = [term.lower() for term in preprocess(tweet_text) if term.lower() not in stop]
+    count_singletons.update(terms_all)
+    # update counter for all bigrams
+    bigrams_all = bigrams([term.lower() for term in preprocess(tweet_text)])
+    count_bigrams.update(bigrams_all)
+    # update co-occurrence matrix for all singletons
+    for i in range(len(terms_all)-1):
+        for j in range(i+1, len(terms_all)):
+            word1, word2 = sorted([terms_all[i], terms_all[j]])
+            if word1 != word2:
+                cooccurrence_matrix[word1][word2] += 1
+    # increment counter for total number of tweets processed
+    global total_tweet_count
+    total_tweet_count += 1
+    # perform updates for each candidate
+    if any(term in terms_all for term in carson_terms):
+        update_singletons(carson_singletons, terms_all)
+        update_bigrams(carson_bigrams, bigrams_all)
+        update_trigrams(carson_trigrams, terms_all)
+        update_com(carson_com, terms_all)
+        global carson_tweet_count
+        carson_tweet_count += 1
+    if any(term in terms_all for term in clinton_terms):
+        update_singletons(clinton_singletons, terms_all)
+        update_bigrams(clinton_bigrams, bigrams_all)
+        update_trigrams(clinton_trigrams, terms_all)
+        update_com(clinton_com, terms_all)
+        global clinton_tweet_count
+        clinton_tweet_count += 1
+    if any(term in terms_all for term in cruz_terms):
+        update_singletons(cruz_singletons, terms_all)
+        update_bigrams(cruz_bigrams, bigrams_all)
+        update_trigrams(cruz_trigrams, terms_all)
+        update_com(cruz_com, terms_all)
+        global cruz_tweet_count
+        cruz_tweet_count += 1
+    if any(term in terms_all for term in kasich_terms):
+        update_singletons(kasich_singletons, terms_all)
+        update_bigrams(kasich_bigrams, bigrams_all)
+        update_trigrams(kasich_trigrams, terms_all)
+        update_com(kasich_com, terms_all)
+        global kasich_tweet_count
+        kasich_tweet_count += 1
+    if any(term in terms_all for term in rubio_terms):
+        update_singletons(rubio_singletons, terms_all)
+        update_bigrams(rubio_bigrams, bigrams_all)
+        update_trigrams(rubio_trigrams, terms_all)
+        update_com(rubio_com, terms_all)
+        global rubio_tweet_count
+        rubio_tweet_count += 1
+    if any(term in terms_all for term in sanders_terms):
+        update_singletons(sanders_singletons, terms_all)
+        update_bigrams(sanders_bigrams, bigrams_all)
+        update_trigrams(sanders_trigrams, terms_all)
+        update_com(sanders_com, terms_all)
+        global sanders_tweet_count
+        sanders_tweet_count += 1
+    if any(term in terms_all for term in trump_terms):
+        update_singletons(trump_singletons, terms_all)
+        update_bigrams(trump_bigrams, bigrams_all)
+        update_trigrams(trump_trigrams, terms_all)
+        update_com(trump_com, terms_all)
+        global trump_tweet_count
+        trump_tweet_count += 1
+
+
+def update_singletons(counter, terms_all):
     counter.update(terms_all)
 
 
-def update_bigrams(counter, tweet_text):
-    bigrams_all = bigrams([term.lower() for term in preprocess(tweet_text)])
+# def update_singletons(counter, tweet_text):
+#     terms_all = [term.lower() for term in preprocess(tweet_text) if term.lower() not in stop]
+#     counter.update(terms_all)
+#     if any(term in terms_all for term in carson_terms):
+#         carson_singletons.update(terms_all)
+#     if any(term in terms_all for term in clinton_terms):
+#         clinton_singletons.update(terms_all)
+#     if any(term in terms_all for term in cruz_terms):
+#         cruz_singletons.update(terms_all)
+#     if any(term in terms_all for term in kasich_terms):
+#         kasich_singletons.update(terms_all)
+#     if any(term in terms_all for term in rubio_terms):
+#         rubio_singletons.update(terms_all)
+#     if any(term in terms_all for term in sanders_terms):
+#         sanders_singletons.update(terms_all)
+#     if any(term in terms_all for term in trump_terms):
+#         trump_singletons.update(terms_all)
+
+
+def update_bigrams(counter, bigrams_all):
     counter.update(bigrams_all)
+
+
+# def update_bigrams(counter, tweet_text):
+#     bigrams_all = bigrams([term.lower() for term in preprocess(tweet_text)])
+#     counter.update(bigrams_all)
 
 
 def update_trigrams(counter, tweet_text):
     return
 
 
-def update_com(ddict, tweet_text):
-    terms_all = [term.lower() for term in preprocess(tweet_text) if term.lower() not in stop]
+def update_com(ddict, terms_all):
     for i in range(len(terms_all)-1):
         for j in range(i+1, len(terms_all)):
             word1, word2 = sorted([terms_all[i], terms_all[j]])
             if word1 != word2:
                 ddict[word1][word2] += 1
+
+
+# def update_com(ddict, tweet_text):
+#     terms_all = [term.lower() for term in preprocess(tweet_text) if term.lower() not in stop]
+#     for i in range(len(terms_all)-1):
+#         for j in range(i+1, len(terms_all)):
+#             word1, word2 = sorted([terms_all[i], terms_all[j]])
+#             if word1 != word2:
+#                 ddict[word1][word2] += 1
 
 
 def calculate_probabilities():
@@ -149,67 +247,7 @@ def calculate_probabilities():
 
 
 # updates for individual candidates (maybe refactor this by including switch statement in above functions)
-def update_carson(tweet_text):
-    update_singletons(carson_singletons, tweet_text)
-    update_bigrams(carson_bigrams, tweet_text)
-    update_trigrams(carson_trigrams, tweet_text)
-    update_com(carson_com, tweet_text)
-    global carson_tweet_count
-    carson_tweet_count += 1
 
-
-def update_clinton(tweet_text):
-    update_singletons(clinton_singletons, tweet_text)
-    update_bigrams(clinton_bigrams, tweet_text)
-    update_trigrams(clinton_trigrams, tweet_text)
-    update_com(clinton_com, tweet_text)
-    global clinton_tweet_count
-    clinton_tweet_count += 1
-
-
-def update_cruz(tweet_text):
-    update_singletons(cruz_singletons, tweet_text)
-    update_bigrams(cruz_bigrams, tweet_text)
-    update_trigrams(cruz_trigrams, tweet_text)
-    update_com(cruz_com, tweet_text)
-    global cruz_tweet_count
-    cruz_tweet_count += 1
-
-
-def update_kasich(tweet_text):
-    update_singletons(kasich_singletons, tweet_text)
-    update_bigrams(kasich_bigrams, tweet_text)
-    update_trigrams(kasich_trigrams, tweet_text)
-    update_com(kasich_com, tweet_text)
-    global kasich_tweet_count
-    kasich_tweet_count += 1
-
-
-def update_rubio(tweet_text):
-    update_singletons(rubio_singletons, tweet_text)
-    update_bigrams(rubio_bigrams, tweet_text)
-    update_trigrams(rubio_trigrams, tweet_text)
-    update_com(rubio_com, tweet_text)
-    global rubio_tweet_count
-    rubio_tweet_count += 1
-
-
-def update_sanders(tweet_text):
-    update_singletons(sanders_singletons, tweet_text)
-    update_bigrams(sanders_bigrams, tweet_text)
-    update_trigrams(sanders_trigrams, tweet_text)
-    update_com(sanders_com, tweet_text)
-    global sanders_tweet_count
-    sanders_tweet_count += 1
-
-
-def update_trump(tweet_text):
-    update_singletons(trump_singletons, tweet_text)
-    update_bigrams(trump_bigrams, tweet_text)
-    update_trigrams(trump_trigrams, tweet_text)
-    update_com(trump_com, tweet_text)
-    global trump_tweet_count
-    trump_tweet_count += 1
 
 #for filename in os.listdir('corpora'):  # uncomment this when finished gathering tweets
 for lap_number in range(1):  # comment out this line when finished gathering tweets
@@ -222,38 +260,7 @@ for lap_number in range(1):  # comment out this line when finished gathering twe
                 #print("Tokenizing the line: \n{}".format(line))
                 tweet = json.loads(line)
                 if 'text' in tweet:
-                    update_singletons(count_singletons, tweet['text'])
-                    update_bigrams(count_bigrams, tweet['text'])
-                    update_com(cooccurrence_matrix, tweet['text'])
-                    total_tweet_count += 1
-                    if any(term in tweet['text'] for term in carson_terms):
-                        update_carson(tweet['text'])
-                    if any(term in tweet['text'] for term in clinton_terms):
-                        update_clinton(tweet['text'])
-                    if any(term in tweet['text'] for term in cruz_terms):
-                        update_cruz(tweet['text'])
-                    if any(term in tweet['text'] for term in kasich_terms):
-                        update_kasich(tweet['text'])
-                    if any(term in tweet['text'] for term in rubio_terms):
-                        update_rubio(tweet['text'])
-                    if any(term in tweet['text'] for term in sanders_terms):
-                        update_sanders(tweet['text'])
-                    if any(term in tweet['text'] for term in trump_terms):
-                        update_trump(tweet['text'])
-                    # create list of single terms
-                    #terms_all = [term.lower() for term in preprocess(tweet['text']) if term.lower() not in stop]
-                    # create list of bigrams
-                    #bigrams_all = bigrams([term.lower() for term in preprocess(tweet['text'])])
-                    # update frequency distributions for singletons and bigrams
-                    #count_singletons.update(terms_all)
-                    #count_bigrams.update(bigrams_all)
-                    # update co-occurrence matrix
-                    #for i in range(len(terms_all)-1):
-                        #for j in range(i+1, len(terms_all)):
-                            #word1, word2 = sorted([terms_all[i], terms_all[j]])
-                            #if word1 != word2:
-                                #cooccurrence_matrix[word1][word2] += 1
-
+                    update_all_counters(tweet['text'])
         # print most common singletons, bigrams, and co-occurrences
         print(count_singletons.most_common(25))
         print(count_bigrams.most_common(25))
