@@ -10,6 +10,7 @@ candidates = ['carson', 'clinton', 'cruz', 'kasich', 'rubio', 'sanders', 'trump'
 
 
 def word_feats(words):
+    # need to add feature extractor here because you can't iterate on a string
     return dict([(word, True) for word in words])
 
 for candidate in candidates:
