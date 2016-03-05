@@ -50,6 +50,13 @@ def preprocess(s, lowercase=True, removestop=True):
     return tokens
 
 
+def bigram_preprocess(s):
+    bigram_feature_vector = []
+    for item in nltk.bigrams(preprocess(s, removestop=False)):
+        bigram_feature_vector.append(item)
+    return bigram_feature_vector
+
+
 def word_feats(words):
     wordlist = preprocess(words)
     # might need to change to format [([words,in,list],sentiment),...([],)]
