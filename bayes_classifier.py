@@ -38,10 +38,24 @@ candidates = ['carson', 'clinton', 'cruz', 'kasich', 'rubio', 'sanders', 'trump'
 
 
 def tokenize(s):
+    """
+    Takes a string and returns all terms, hastags, and other relevant features in a list.
+
+    :param s: string to tokenize
+    :return: list of terms, hastags, and other features from the string, in order they appear
+    """
     return tokens_re.findall(s)
 
 
 def preprocess(s, lowercase=True, removestop=True):
+    """
+    Process string and turn into list of tokens, emoticons, and relevant features.
+
+    :param s: string to process
+    :param lowercase: force string to lowercase; default TRUE
+    :param removestop: remove stopwords and extraneous words from string; default TRUE
+    :return: list of tokens in order they appear
+    """
     tokens = tokenize(s)
     if lowercase:
         tokens = [token if emoticon_re.search(token) else token.lower() for token in tokens]
@@ -51,6 +65,12 @@ def preprocess(s, lowercase=True, removestop=True):
 
 
 def bigram_preprocess(s):
+    """
+    Gets list of bigrams from a given string.
+
+    :param s:  A string to have bigrams taken from
+    :return: A list of bigrams in the form of tuples
+    """
     bigram_feature_vector = []
     for item in nltk.bigrams(preprocess(s, removestop=False)):
         bigram_feature_vector.append(item)
