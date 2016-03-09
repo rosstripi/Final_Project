@@ -35,6 +35,7 @@ stop = stopwords.words('english') + punctuation + ['rt', 'via', '…', 'https', 
 
 
 candidates = ['carson', 'clinton', 'cruz', 'kasich', 'rubio', 'sanders', 'trump']
+already_classified_bigrams = []
 
 
 def tokenize(s):
@@ -83,6 +84,50 @@ def word_feats(words):
     return dict([(word, True) for word in wordlist if word not in stopwords])
     # return [(preprocess(wordlist), )]
 
+
+def get_bigrams_in_tweets(tweets):
+    """
+    Takes list formatted as [((bi,gram),sentiment),...] and returns list of all bigrams
+
+    :param tweets: list formatted as [((bi,gram),sentiment),...] containing bigrams in tweet, tweet sentiment
+    :return: list of all bigrams in all tweets
+    """
+    all_bigrams = []
+    for (bigrams, sentiment) in tweets:
+      all_bigrams.extend(bigrams)
+    return all_bigrams
+
+
+def get_bigram_features(bigramlist):
+    """
+    Takes list of bigrams and returns "set" of bigrams (no repeated bigrams; not actually a set)
+
+    :param bigramlist: list of bigrams formatted as [(bi,gram),...]
+    :return: "set" of bigrams (no repeated bigrams; not actually a set)
+    """
+    bigramlist = nltk.FreqDist(bigramlist)
+    bigram_features = bigramlist.keys()
+    return bigram_features
+
+# the following is test/dummy data that needs to be replaced
+s1 = "This is a good sentence."
+s2 = "This is a bad sentence."
+already_classified_bigrams.append((bigram_preprocess(s1), 'pos'))
+already_classified_bigrams.append((bigram_preprocess(s2), 'neg'))
+bigram_features = get_bigram_features(get_bigrams_in_tweets(already_classified_bigrams))
+
+
+def extract_features(document_bigrams):
+    document_bigrams = set(document_bigrams)
+    features = {}
+    for bigram in bigram_features:
+        features['contains(%s)' % str(bigram)] = (bigram in document_bigrams)
+    return features
+
+
+training_set = nltk.classify.apply_features(extract_features, already_classified_bigrams)
+classifier = nltk.NaiveBayesClassifier.train(training_set)
+
 for candidate in candidates:
     posfile = 'training_sets/positive/{}.json'.format(candidate)
     negfile = 'training_sets/negative/{}.json'.format(candidate)
@@ -96,6 +141,7 @@ for candidate in candidates:
                 tweet = json.loads(line)
                 if 'text' in tweet:
                     pos1feats.append((preprocess(tweet['text']), 'pos'))
+                    pos3feats.append()
     with open(negfile, 'r') as jsonfile:
         for line in jsonfile:
             if line not in ['\n', '\r\n']:
