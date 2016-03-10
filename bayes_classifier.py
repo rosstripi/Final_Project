@@ -35,7 +35,7 @@ stop = stopwords.words('english') + punctuation + ['rt', 'via', '…', 'https', 
 
 
 candidates = ['carson', 'clinton', 'cruz',
-              # 'kasich', 'rubio', 'sanders',
+              'kasich', 'rubio', 'sanders',
               'trump']
 already_classified_bigrams = []
 
