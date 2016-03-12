@@ -38,6 +38,7 @@ candidates = ['carson', 'clinton', 'cruz',
               'kasich', 'rubio', 'sanders',
               'trump']
 already_classified_bigrams = []
+bigram_features = None  # contains "set" of bigrams found in tweets
 
 
 def tokenize(s):
@@ -108,11 +109,16 @@ def get_bigram_features(bigramlist):
     :return: "set" of bigrams (no repeated bigrams; not actually a set)
     """
     bigramlist = nltk.FreqDist(bigramlist)
-    bigram_features = bigramlist.keys()
-    return bigram_features
+    bigram_feats = bigramlist.keys()
+    return bigram_feats
 
 
-
+def extract_bigram_features(document_bigrams):
+    document_bigrams = set(document_bigrams)
+    features = {}
+    for bigram in bigram_features:
+        features['contains(%s)' % str(bigram)] = (bigram in document_bigrams)
+    return features
 
 
 for candidate in candidates:
@@ -136,6 +142,15 @@ for candidate in candidates:
                 if 'text' in tweet:
                     # neg1feats.append((preprocess(tweet['text']), 'neg'))
                     already_classified_bigrams.append((bigram_preprocess(tweet['text']), 'neg'))
+    global bigram_features
+    bigram_features = get_bigram_features(get_bigrams_in_tweets(already_classified_bigrams))
+    training_set = nltk.classify.apply_features(extract_bigram_features, already_classified_bigrams)
+    classifier = nltk.NaiveBayesClassifier.train(training_set)
+    print("Results for {}: \n".format(candidate))
+    print(classifier.show_most_informative_features())
+    # reset both global containers of bigrams and features
+    bigram_features = None
+    already_classified_bigrams = []
     # negcutoff = len(neg1feats)*3//4
     # poscutoff = len(pos1feats)*3//4
     # trainfeats = neg1feats[:negcutoff] + pos1feats[:poscutoff]
@@ -146,16 +161,6 @@ for candidate in candidates:
     # print('accuracy:', nltk.classify.util.accuracy(classifier, testfeats))
     # classifier.show_most_informative_features()
 
-bigram_features = get_bigram_features(get_bigrams_in_tweets(already_classified_bigrams))
 
 
-def extract_bigram_features(document_bigrams):
-    document_bigrams = set(document_bigrams)
-    features = {}
-    for bigram in bigram_features:
-        features['contains(%s)' % str(bigram)] = (bigram in document_bigrams)
-    return features
 
-
-training_set = nltk.classify.apply_features(extract_bigram_features, already_classified_bigrams)
-classifier = nltk.NaiveBayesClassifier.train(training_set)
