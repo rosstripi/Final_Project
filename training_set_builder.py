@@ -46,14 +46,14 @@ class TweetListener(StreamListener):
             if 'text' in jtweet:
                 tweet_text = jtweet['text']
                 tweet_text = tweet_text.lower()
-                # if any(term in tweet_text for term in carson_terms):
-                #     self.write_to_json('carson', data)
+                if any(term in tweet_text for term in carson_terms):
+                    self.write_to_json('carson', data)
                 # if any(term in tweet_text for term in clinton_terms):
                 #     self.write_to_json('clinton', data)
                 # if any(term in tweet_text for term in cruz_terms):
                 #     self.write_to_json('cruz', data)
-                if any(term in tweet_text for term in kasich_terms):
-                    self.write_to_json('kasich', data)
+                # if any(term in tweet_text for term in kasich_terms):
+                #     self.write_to_json('kasich', data)
                 # if any(term in tweet_text for term in rubio_terms):
                 #     self.write_to_json('rubio', data)
                 # if any(term in tweet_text for term in sanders_terms):
@@ -73,11 +73,11 @@ class TweetListener(StreamListener):
 
 
 candidates_stream = Stream(auth, TweetListener()).filter(track=[
-                                                                        #'#Carson', 'Carson', '#BenCarson', 'Ben Carson',
-                                                                        #'#Clinton', 'Clinton', '#Hillary', 'Hillary', '#HillaryClinton', 'Hillary Clinton',
-                                                                        #'#Cruz', 'Cruz', '#TedCruz', 'Ted Cruz',
-                                                                        '#Kasich', 'Kasich', '#JohnKasich', 'John Kasich',
-                                                                        #'#Rubio', 'Rubio', '#Marco', 'Marco', '#MarcoRubio', 'Marco Rubio',
-                                                                        #'#Sanders', 'Sanders', '#Bernie', 'Bernie', '#BernieSanders', 'Bernie Sanders',
-                                                                        #'#Trump', 'Trump', '#Donald', 'Donald', '#DonaldTrump', 'Donald Trump'
+                                                                        '#Carson', 'Carson', '#BenCarson', 'Ben Carson',
+                                                                        # '#Clinton', 'Clinton', '#Hillary', 'Hillary', '#HillaryClinton', 'Hillary Clinton',
+                                                                        # '#Cruz', 'Cruz', '#TedCruz', 'Ted Cruz',
+                                                                        # '#Kasich', 'Kasich', '#JohnKasich', 'John Kasich',
+                                                                        # '#Rubio', 'Rubio', '#Marco', 'Marco', '#MarcoRubio', 'Marco Rubio',
+                                                                        # '#Sanders', 'Sanders', '#Bernie', 'Bernie', '#BernieSanders', 'Bernie Sanders',
+                                                                        # '#Trump', 'Trump', '#Donald', 'Donald', '#DonaldTrump', 'Donald Trump'
                                                                 ])

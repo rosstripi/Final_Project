@@ -4,7 +4,8 @@ author: Ross Tripi
 """
 
 import json, re, os, operator, string, vincent, math
-from nltk.tokenize import word_tokenize
+#from nltk.tokenize import word_tokenize
+import bayes_classifier
 from nltk.corpus import stopwords
 from nltk import bigrams
 from collections import Counter, defaultdict
@@ -137,50 +138,50 @@ def update_all_counters(tweet_text):
     # perform updates for each candidate
     if any(term in terms_all for term in carson_terms):
         update_singletons(carson_singletons, terms_all)
-        update_bigrams(carson_bigrams, bigrams_all)
-        update_trigrams(carson_trigrams, terms_all)
+        # update_bigrams(carson_bigrams, bigrams_all)
+        # update_trigrams(carson_trigrams, terms_all)
         update_com(carson_com, terms_all)
         global carson_tweet_count
         carson_tweet_count += 1
     if any(term in terms_all for term in clinton_terms):
         update_singletons(clinton_singletons, terms_all)
-        update_bigrams(clinton_bigrams, bigrams_all)
-        update_trigrams(clinton_trigrams, terms_all)
+        # update_bigrams(clinton_bigrams, bigrams_all)
+        # update_trigrams(clinton_trigrams, terms_all)
         update_com(clinton_com, terms_all)
         global clinton_tweet_count
         clinton_tweet_count += 1
     if any(term in terms_all for term in cruz_terms):
         update_singletons(cruz_singletons, terms_all)
-        update_bigrams(cruz_bigrams, bigrams_all)
-        update_trigrams(cruz_trigrams, terms_all)
+        # update_bigrams(cruz_bigrams, bigrams_all)
+        # update_trigrams(cruz_trigrams, terms_all)
         update_com(cruz_com, terms_all)
         global cruz_tweet_count
         cruz_tweet_count += 1
     if any(term in terms_all for term in kasich_terms):
         update_singletons(kasich_singletons, terms_all)
-        update_bigrams(kasich_bigrams, bigrams_all)
-        update_trigrams(kasich_trigrams, terms_all)
+        # update_bigrams(kasich_bigrams, bigrams_all)
+        # update_trigrams(kasich_trigrams, terms_all)
         update_com(kasich_com, terms_all)
         global kasich_tweet_count
         kasich_tweet_count += 1
     if any(term in terms_all for term in rubio_terms):
         update_singletons(rubio_singletons, terms_all)
-        update_bigrams(rubio_bigrams, bigrams_all)
-        update_trigrams(rubio_trigrams, terms_all)
+        # update_bigrams(rubio_bigrams, bigrams_all)
+        # update_trigrams(rubio_trigrams, terms_all)
         update_com(rubio_com, terms_all)
         global rubio_tweet_count
         rubio_tweet_count += 1
     if any(term in terms_all for term in sanders_terms):
         update_singletons(sanders_singletons, terms_all)
-        update_bigrams(sanders_bigrams, bigrams_all)
-        update_trigrams(sanders_trigrams, terms_all)
+        # update_bigrams(sanders_bigrams, bigrams_all)
+        # update_trigrams(sanders_trigrams, terms_all)
         update_com(sanders_com, terms_all)
         global sanders_tweet_count
         sanders_tweet_count += 1
     if any(term in terms_all for term in trump_terms):
         update_singletons(trump_singletons, terms_all)
-        update_bigrams(trump_bigrams, bigrams_all)
-        update_trigrams(trump_trigrams, terms_all)
+        # update_bigrams(trump_bigrams, bigrams_all)
+        # update_trigrams(trump_trigrams, terms_all)
         update_com(trump_com, terms_all)
         global trump_tweet_count
         trump_tweet_count += 1
@@ -190,12 +191,12 @@ def update_singletons(counter, terms_all):
     counter.update(terms_all)
 
 
-def update_bigrams(counter, bigrams_all):
-    counter.update(bigrams_all)
-
-
-def update_trigrams(counter, tweet_text):
-    return
+# def update_bigrams(counter, bigrams_all):
+#     counter.update(bigrams_all)
+#
+#
+# def update_trigrams(counter, tweet_text):
+#     return
 
 
 def update_com(ddict, terms_all):

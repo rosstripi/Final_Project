@@ -3,7 +3,7 @@ Naive Bayes Classifier for candidate sentiment analysis
 """
 
 import nltk.classify.util
-from nltk.classify import NaiveBayesClassifier
+# from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import stopwords
 import json, re, string
 
@@ -37,7 +37,7 @@ stop = stopwords.words('english') + punctuation + ['rt', 'via', '…', 'https', 
 candidates = ['carson', 'clinton', 'cruz',
               'kasich', 'rubio', 'sanders',
               'trump']
-already_classified_bigrams = []
+# already_classified_bigrams = []
 bigram_features = None  # contains "set" of bigrams found in tweets
 
 
@@ -121,13 +121,38 @@ def extract_bigram_features(document_bigrams):
     return features
 
 
-for candidate in candidates:
+def classify_string(classifier, strng):
+    """
+    Takes a nltk.NaiveBayesClassifier that has already been trained and a string to test, returns classification
+
+    :param classifier: nltk.NaiveBayesClassifier that has already been trained
+    :param strng: string to be tested for classification/sentiment
+    :return: string of the classification/sentiment
+    """
+
+    bigrams_from_string = bigram_preprocess(strng)
+    global bigram_features
+    bigram_features = get_bigram_features(bigrams_from_string)
+    return classifier.classify(extract_bigram_features(bigrams_from_string))
+
+
+def build_bigram_classifier_for_candidate(candidate):
+    """
+    For the given candidate, examine training sets and return a Bayes Classifier for it.
+    :param candidate: lowercase string of the last name of the candidate
+    :return: a nltk.NaiveBayesClassifier for the candidate based on the provided training sets
+    """
+
     posfile = 'training_sets/positive/{}.json'.format(candidate)
     negfile = 'training_sets/negative/{}.json'.format(candidate)
-    pos1feats = []
-    neg1feats = []
-    pos3feats = []
-    neg3feats = []
+    # global already_classified_bigrams
+    global bigram_features
+    bigram_features = None
+    already_classified_bigrams = []
+    # pos1feats = []
+    # neg1feats = []
+    # pos3feats = []
+    # neg3feats = []
     with open(posfile, 'r') as jsonfile:
         for line in jsonfile:
             if line not in ['\n', '\r\n']:
@@ -142,25 +167,59 @@ for candidate in candidates:
                 if 'text' in tweet:
                     # neg1feats.append((preprocess(tweet['text']), 'neg'))
                     already_classified_bigrams.append((bigram_preprocess(tweet['text']), 'neg'))
-    global bigram_features
     bigram_features = get_bigram_features(get_bigrams_in_tweets(already_classified_bigrams))
     training_set = nltk.classify.apply_features(extract_bigram_features, already_classified_bigrams)
     classifier = nltk.NaiveBayesClassifier.train(training_set)
-    print("Results for {}: \n".format(candidate))
-    print(classifier.show_most_informative_features())
+    # print("Results for {}: \n".format(candidate))
+    # print(classifier.show_most_informative_features())
     # reset both global containers of bigrams and features
     bigram_features = None
-    already_classified_bigrams = []
-    # negcutoff = len(neg1feats)*3//4
-    # poscutoff = len(pos1feats)*3//4
-    # trainfeats = neg1feats[:negcutoff] + pos1feats[:poscutoff]
-    # testfeats = neg1feats[negcutoff:] + pos1feats[poscutoff:]
-    # print('train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats)))
-
-    # classifier = NaiveBayesClassifier.train(trainfeats)
-    # print('accuracy:', nltk.classify.util.accuracy(classifier, testfeats))
-    # classifier.show_most_informative_features()
+    # already_classified_bigrams = []
+    return classifier
 
 
+
+#
+# for candidate in candidates:
+#     posfile = 'training_sets/positive/{}.json'.format(candidate)
+#     negfile = 'training_sets/negative/{}.json'.format(candidate)
+#     # pos1feats = []
+#     # neg1feats = []
+#     # pos3feats = []
+#     # neg3feats = []
+#     with open(posfile, 'r') as jsonfile:
+#         for line in jsonfile:
+#             if line not in ['\n', '\r\n']:
+#                 tweet = json.loads(line)
+#                 if 'text' in tweet:
+#                     # pos1feats.append((preprocess(tweet['text']), 'pos'))
+#                     already_classified_bigrams.append((bigram_preprocess(tweet['text']), 'pos'))
+#     with open(negfile, 'r') as jsonfile:
+#         for line in jsonfile:
+#             if line not in ['\n', '\r\n']:
+#                 tweet = json.loads(line)
+#                 if 'text' in tweet:
+#                     # neg1feats.append((preprocess(tweet['text']), 'neg'))
+#                     already_classified_bigrams.append((bigram_preprocess(tweet['text']), 'neg'))
+#     global bigram_features
+#     bigram_features = get_bigram_features(get_bigrams_in_tweets(already_classified_bigrams))
+#     training_set = nltk.classify.apply_features(extract_bigram_features, already_classified_bigrams)
+#     classifier = nltk.NaiveBayesClassifier.train(training_set)
+#     print("Results for {}: \n".format(candidate))
+#     print(classifier.show_most_informative_features())
+#     # reset both global containers of bigrams and features
+#     bigram_features = None
+#     already_classified_bigrams = []
+#     # negcutoff = len(neg1feats)*3//4
+#     # poscutoff = len(pos1feats)*3//4
+#     # trainfeats = neg1feats[:negcutoff] + pos1feats[:poscutoff]
+#     # testfeats = neg1feats[negcutoff:] + pos1feats[poscutoff:]
+#     # print('train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats)))
+#
+#     # classifier = NaiveBayesClassifier.train(trainfeats)
+#     # print('accuracy:', nltk.classify.util.accuracy(classifier, testfeats))
+#     # classifier.show_most_informative_features()
+#
+#
 
 
