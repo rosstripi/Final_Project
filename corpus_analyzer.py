@@ -42,7 +42,7 @@ for filename in os.listdir('corpora'):  # uncomment this when finished gathering
             if line not in ['\n', '\r\n']:
                 #print("Tokenizing the line: \n{}".format(line))
                 tweet = json.loads(line)
-                if 'text' in tweet:
+                if 'text' in tweet and tweet['lang'] == "en":
                     total_tweets += 1
                     #update_all_counters(tweet['text'])
                     terms_all = bayes_classifier.preprocess(tweet['text'], removestop=False)
@@ -74,4 +74,5 @@ for candidate in candidates:
     print("Total tweets from corpus: {}\n".format(total_tweets_per_candidate[candidate]))
     print("Ratio of Pos:Neg : {}:{}\n".format(sentiment_counts_per_candidate[candidate]['pos'],sentiment_counts_per_candidate[candidate]['neg']))
     print("\n ------------------------------------------------------------------------------------------------------\n")
-    print("Total tweets examined: {}\n".format(total_tweets))
+
+print("Total tweets examined: {}\n".format(total_tweets))
