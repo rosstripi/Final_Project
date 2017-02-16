@@ -9,11 +9,11 @@ from tweepy import Stream
 from tweepy.streaming import StreamListener
 import os
 
-consumer_key        = "3cbQ7BUWxktCbCte32GlShgbl"
-consumer_secret     = "BWjrIMQ9r5JuFRlm0W33CRXs9a8tNqCxO2om75izNE7T8LklrG"
+consumer_key        = ""
+consumer_secret     = ""
 # note: access tokens may have to be occasionally updated
-access_token        = "351203594-B4esbGhxDgDvjimeywxWgKgAvPbssrtEkPscWOBW"
-access_token_secret = "cBrDXuSXws7QL1Bh1zDFwxE8ny32pwa7dEgtrj43XMK7t"
+access_token        = ""
+access_token_secret = ""
 
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -42,11 +42,12 @@ class TweetListener(StreamListener):
         return True
 
 
-candidates_stream = Stream(auth, TweetListener()).filter(track=['#Carson', 'Carson', '#BenCarson', 'Ben Carson',
+candidates_stream = Stream(auth, TweetListener()).filter(track=[
+                                                                        #'#Carson', 'Carson', '#BenCarson', 'Ben Carson',
                                                                         '#Clinton', 'Clinton', '#Hillary', 'Hillary', '#HillaryClinton', 'Hillary Clinton',
                                                                         '#Cruz', 'Cruz', '#TedCruz', 'Ted Cruz',
                                                                         '#Kasich', 'Kasich', '#JohnKasich', 'John Kasich',
-                                                                        '#Rubio', 'Rubio', '#Marco', 'Marco', '#MarcoRubio', 'Marco Rubio',
+                                                                        #'#Rubio', 'Rubio', '#Marco', 'Marco', '#MarcoRubio', 'Marco Rubio',
                                                                         '#Sanders', 'Sanders', '#Bernie', 'Bernie', '#BernieSanders', 'Bernie Sanders',
                                                                         '#Trump', 'Trump', '#Donald', 'Donald', '#DonaldTrump', 'Donald Trump'])
 
